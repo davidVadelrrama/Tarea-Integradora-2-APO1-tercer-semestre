@@ -148,13 +148,12 @@ public class ChannelBlackSnail{
 				break;
 		}
 		Date launchDate = new Date(sDay,sMonth,sYear);
-		for (int i = 0; i < seasons.length; i++) {
 			Season season = new Season(seasonNum, programmedEpisodes, releasedEpisodes, launchDate);
-		}
+		seasons[0] = season;
 
 
 		for (int i = 0; i < products.length; i++) {
-			Series serie = new Series(seriesName, seriesDirector, seriesSinopsis, seriesTrailer,mainCh, seasons, motive,isCensored);
+			Series serie = new Series(seriesName, seriesDirector, seriesSinopsis, seriesTrailer,mainCh, seasons[], motive,isCensored);
 			products[i] = serie;
 		}
 
