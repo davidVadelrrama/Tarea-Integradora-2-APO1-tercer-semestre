@@ -20,7 +20,6 @@ public class ChannelBlackSnail{
 		this.webSite = webSite;
 		subscriber = new Subscriber[50];
 		products = new Product[85];
-		seasons = new Season[6];
 	}
 	
 	
@@ -136,9 +135,27 @@ public class ChannelBlackSnail{
 		return menor;
 	}
 
+	/*
+	 *
+	 *  Descripcion: Crea un objeto tipo serie y lo añade a un arreglo
+	 *	@param seriesName String
+	 *	@param seriesDirector String
+	 *	@param seriesSinopsis String
+	 * 	@param mainCh String
+	 *  @param seasonNum int
+	 *  @param programmedEpisodes int
+	 *  @param releasedEpisodes int
+	 *  @param sDay int
+	 *  @param sMonth int
+	 *  @param sYear int
+	 *  @param isCensored int
+	 *  @param motive String
+	 *
+	 */
 	public void addSeries(String seriesName, String seriesDirector, String seriesSinopsis, String seriesTrailer,String mainCh, int seasonNum, int programmedEpisodes, int releasedEpisodes, int sDay, int sMonth, int sYear, int censored, String motive){
 
-		Censored isCensored = Censored.E;
+		Series serie = null;
+		Censored isCensored = Censored.NO;
 		switch (censored){
 			case 1:
 				isCensored = Censored.YES;
@@ -148,20 +165,36 @@ public class ChannelBlackSnail{
 				break;
 		}
 		Date launchDate = new Date(sDay,sMonth,sYear);
-			Season season = new Season(seasonNum, programmedEpisodes, releasedEpisodes, launchDate);
-		seasons[0] = season;
-
-
-		for (int i = 0; i < products.length; i++) {
-			Series serie = new Series(seriesName, seriesDirector, seriesSinopsis, seriesTrailer,mainCh, seasons[], motive,isCensored);
-			products[i] = serie;
+		
+		boolean flag = false;
+		for (int i = 0; i < products.length && flag == false; i++) {
+			if(products[i] == null){
+				Season season = new Season(seasonNum, programmedEpisodes, releasedEpisodes, launchDate);
+				serie = new Series(seriesName, seriesDirector, seriesSinopsis, seriesTrailer,mainCh, motive,isCensored);
+				serie.addSeason(season);
+				products[i] = serie;
+				flag = true;
+			}
 		}
-
-
-
 	}
-	
+
+	/*
+	 *
+	 *  Descripcion: crea un objeto de clase pelicula y lo añade a un arreglo
+	 *	@param name String
+	 *	@param movieDirector String
+	 *	@param movieSinopsis String
+	 *  @param movieTrailer String
+	 *  @param mDay int
+	 *  @param mMonth int
+	 *  @param mYear int
+	 *  @param mPegi int
+	 *  @param mProducer String
+	 *  @param genren int
+	 *
+	 */
 	public void addMovie(String name, String movieDirector, String movieSinopsis, String movieTrailer, int mDay, int mMonth, int mYear, int mPegi, String mProducer, int genren){
+		boolean flag = false;
 		Genre newGenre = Genre.NONE;
 		switch (genren){
 			case 1:
@@ -182,58 +215,135 @@ public class ChannelBlackSnail{
 		}
 		Date premiereDate = new Date(mDay,mMonth,mYear);
 
-		for (int i = 0; i < products.length; i++) {
+		for (int i = 0; i < products.length && flag == false; i++) {
 			if(products[i] == null){
 				Movie mov = new Movie(name, movieDirector, movieSinopsis, movieTrailer, mPegi, mProducer, premiereDate, newGenre);
 				products[i] = mov;
+				flag = true;
+			}
+		}
+	}
+
+	/*
+	*
+	* Descripcion: busca un titulo e imprime su info
+	* @param search String
+	*
+	*/
+	public String search(String search){
+	String out = "";
+	boolean flag = false;
+		for (int i = 0; i < products.length && flag != true; i++) {
+			if(products[i] != null){
+				if(products[i].getName().equals(search)){
+					out = products[i].toString();
+					flag = true;
+				}else {
+					out = "no existe ese titulo en nuestro catalogo";
+				}
 			}
 
 		}
-
-
-
-
-
+		return out;
 	}
-	public String search(String search){
-		for (int i = 0; i < products.length; i++) {
+
+
+	/*
+	*
+	*  Descripcion: añade un objeto temporada a un arreglo de temporadas dentro de un objeto serie
+	*  @param name String
+	*  @param seasonNum int
+	*  @param programmedEpisodes int
+	*  @param releasedEpisodes int
+	*  @param sDay int
+	*  @param sMonth int
+	*  @param sYear int
+	*
+	*/
+	public String addSeason(String name, int seasonNum, int programmedEpisodes, int releasedEpisodes, int sDay,int sMonth,int sYear){
+
+		String out = "";
+		boolean flag = false;
+		for (int i = 0; i < products.length && flag == false; i++) {
 			if(products[i] != null){
-				if(products[i].getName().equals(search)){
-					return products[i].toString();
+				if(products[i].getName().equals(name)){
+					if(products[i] instanceof Series){
+						Date releaseDate = new Date(sDay,sMonth,sYear);
+						Season newSeason = new Season(seasonNum, programmedEpisodes, releasedEpisodes,releaseDate);
+						((Series)products[i]).addSeason(newSeason);
+						out = "se añadio correctamente la temporada";
+						flag = true;
+					}
+				}
+			}
+		}
+		return out;
+	}
+
+	public String listOfMoviesByGenre(int genre){
+		String out = "Lista de peliculas por genero: ";
+		Genre genero = Genre.NONE;
+		switch (genre){
+			case 1:
+				genero = Genre.ACTION;
+				break;
+			case 2:
+				genero = Genre.COMEDY;
+				break;
+			case 3:
+				genero = Genre.ROMANCE;
+				break;
+			case 4:
+				genero = Genre.HORROR;
+				break;
+			case 5:
+				genero = Genre.SUSPENSE;
+				break;
+		}
+		boolean flag = false;
+		for (int i = 0; i < products.length; i++) {
+			if(products[i] != null) {
+				if (products[i] instanceof  Movie) {
+					System.out.println(i);
+					if(((Movie)products[i]).getMovieGenre().equals(genero)){
+						out += "\n" + products[i].getName();
+
+					}
 
 				}
 			}
 		}
-		return "";
-	}
-	
-	public void addSeason(String name, int seasonNum, int programmedEpisodes, int releasedEpisodes, int sDay,int sMonth,int sYear){
 
-		for (int i = 0; i < seasons.length; i++) {
-			if(seasons[i] == null){
-				Date releaseDate = new Date(sDay,sMonth,sYear);
-				Season newSeason = new Season(seasonNum, programmedEpisodes, releasedEpisodes,releaseDate);
-				seasons[i] = newSeason;
+		return out;
+
+	}
+
+	public String listSeries(){
+		boolean flag = false;
+		String out = "";
+		for (int i = 0; i < products.length; i++) {
+			if(products[i] != null){
+				if(products[i] instanceof Series){
+					for (int j = seasons.length-1; j >=0 && flag == false; j--) {
+						if(seasons[j] != null){
+							out = seasons[j].toString();
+							flag = true;
+						}
+					}
+				}
 			}
 		}
+		return out;
 	}
+
+
 	//getters & setters
 
-
-	public String getWebAddress() {
-		return webAddress;
-	}
 	public Product[] getProducts() {
 		return products;
 	}
 	public void setProducts(Product[] products) {
 		this.products = products;
-	}
-	public Season[] getSeasons() {
-		return seasons;
-	}
-	public void setSeasons(Season[] seasons) {
-		this.seasons = seasons;
 	}
 	public Subscriber[] getSubscriber() {
         return subscriber;
@@ -247,7 +357,7 @@ public class ChannelBlackSnail{
 	public void setNit(String nit) {
         this.nit = nit;
     }
-	public String getwebAddress() {
+	public String getWebAddress() {
         return webAddress;
     }
 	public void setWebAddress(String webAddress) {

@@ -5,7 +5,7 @@ public class Season {
     private int seasonNum;
     private int programmedEpisodes;
     private int releasedEpisodes;
-    private Date releaseDate;
+    public Date releaseDate;
 
     public Season(int seasonNum, int programmedEpisodes, int releasedEpisodes, Date releaseDate) {
         this.seasonNum = seasonNum;
@@ -44,5 +44,14 @@ public class Season {
 
     public void setReleasedEpisodes(int releasedEpisodes) {
         this.releasedEpisodes = releasedEpisodes;
+    }
+
+    @Override
+    public String toString() {
+        return "Season" +
+                "seasonNum=" + seasonNum +
+                "\nprogrammedEpisodes=" + programmedEpisodes +
+                "\nreleasedEpisodes=" + releasedEpisodes +
+                "\nreleaseDate=" + releaseDate;
     }
 }

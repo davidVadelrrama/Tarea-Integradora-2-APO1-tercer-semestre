@@ -9,13 +9,15 @@ public class Series extends Product{
     private String mainCharacters;
     public Season[] seasons;
     private Censored isCensored;
+    private int cantSeasons;
 
     //Constructor
     public Series(String name, String sinopsis, String director, String trailer,String mainCharacters, String censoreMotive, Censored isCensored)  {
         super(name, sinopsis, director, trailer);
         this.censoreMotive = censoreMotive;
         this.mainCharacters = mainCharacters;
-		seasons = new Season[6];
+		seasons = new Season[20];
+        cantSeasons = 1;
 		this.isCensored = isCensored;
     
 	}
@@ -53,12 +55,17 @@ public class Series extends Product{
         this.mainCharacters = mainCharacters;
     }
 
+    public void addSeason(Season season){
+        seasons[cantSeasons-1] = season;
+        cantSeasons++;
+    }
+
     @Override
     public String toString() {
         return "Series" +
-                "name='" + name + '\'' +
-                ", sinopsis='" + sinopsis + '\'' +
-                ", director='" + director + '\'' +
+                "name='" + name +
+                ", sinopsis='" + sinopsis +
+                ", director='" + director +
                 ", trailer='" + trailer + '\'' +
                 ", censoreMotive='" + censoreMotive + '\'' +
                 ", mainCharacters=" + mainCharacters +
