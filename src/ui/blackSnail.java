@@ -3,11 +3,12 @@ import java.util.Scanner;
 
 import model.ChannelBlackSnail;
 import model.Subscriber;
-
+import org.w3c.dom.ls.LSOutput;
 
 
 public class blackSnail {
-    
+	
+	System.out.println("hola");
     static Scanner sc = new Scanner(System.in);
     public Subscriber subscriber;
 	public static ChannelBlackSnail channel;
